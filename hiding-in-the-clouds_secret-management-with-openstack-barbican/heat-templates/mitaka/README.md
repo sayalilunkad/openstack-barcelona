@@ -18,3 +18,8 @@ You will find commented configuration snippets for each of these files in the
 `etc/` subdirectory. Both Heat templates contain a comment with an example Heat
 client invocation at the top. You will probably have to modify this slighly for
 your own use.
+
+For encrypted Cinder volumes to work through Heat, you will also need to apply
+the patch attached to this bug:
+
+https://bugs.launchpad.net/cinder/+bug/1631078
