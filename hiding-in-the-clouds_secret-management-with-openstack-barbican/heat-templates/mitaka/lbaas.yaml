@@ -220,7 +220,7 @@ resources:
   listener:
     type: OS::Neutron::LBaaS::Listener
     properties:
-      default_tls_container_ref: tls_container
+      default_tls_container_ref: { get_resource: tls_container }
       loadbalancer: { get_resource: loadbalancer }
       protocol: TERMINATED_HTTPS
       protocol_port: { get_param: lb_port }
