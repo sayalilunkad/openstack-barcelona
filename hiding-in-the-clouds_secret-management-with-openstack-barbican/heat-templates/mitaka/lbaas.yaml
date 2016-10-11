@@ -1,4 +1,5 @@
-# heat stack-create --poll -f heat-templates/hot/lbaasv2/lb_group.yaml -P public_key="$(cat server.crt)" -P private_key="$(cat server.key)" -P public_network=floating -P image=cirros-0.3.4-x86_64-tempest-machine -P flavor=m1.tiny lb_ssl
+# Example invocation:
+#   heat stack-create --poll -f heat-templates/hot/lbaasv2/lb_group.yaml -P public_key="$(cat server.crt)" -P private_key="$(cat server.key)" -P public_network=floating -P image=cirros-0.3.4-x86_64-tempest-machine -P flavor=m1.tiny lb_ssl
 # Note: You will need to generate SSL keys as documented in
 #         https://wiki.openstack.org/wiki/Network/LBaaS/docs/how-to-create-tls-loadbalancer#Create_certificate_chain_and_key.
 #       and be in the directory where you created the keys for this to work.
@@ -113,8 +114,8 @@ resources:
           template: |
             #!/bin/sh
             set -x
-            exec 2>&1 > /var/log/user-data.log
-            Body="Works member $(hostname)
+            exec > /var/log/user-data.log 2>&1
+            Body="Works member $(hostname)"
             Response="HTTP/1.1 200 OK\r\nContent-Length: ${#Body}\r\n\r\n$Body"
             while true ; do echo -e $Response | sudo nc -llp PORT; done
           params:
@@ -158,8 +159,8 @@ resources:
           template: |
             #!/bin/sh
             set -x
-            exec 2>&1 > /var/log/user-data.log
-            Body="Works member $(hostname)
+            exec > /var/log/user-data.log 2>&1
+            Body="Works member $(hostname)"
             Response="HTTP/1.1 200 OK\r\nContent-Length: ${#Body}\r\n\r\n$Body"
             while true ; do echo -e $Response | sudo nc -llp PORT; done
           params:
