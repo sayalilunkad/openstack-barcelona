@@ -1,4 +1,4 @@
-
+# Example invocation: heat stack-create --poll -f cinder-encrypted.yaml cinder-encrypted
 heat_template_version: 2015-10-15
 
 
@@ -40,20 +40,20 @@ resources:
 
   # Note: this can only created if heat-engine uses an adminURL for its Cinder client
   # cinder type-create encrypted
-#  myvolumetype:
-#    type: OS::Cinder::VolumeType
-#    properties:
-#      name: encrypted
-#      is_public: true
+  myvolumetype:
+    type: OS::Cinder::VolumeType
+    properties:
+      name: encrypted
+      is_public: true
 
   # Note: this can only created if heat-engine uses an adminURL for its Cinder client
   # cinder encryption-type-create encrypted nova.volume.encryptors.luks.LuksEncryptor
-#  encryption_type:
-#    type: OS::Cinder::EncryptedVolumeType
-#    properties:
-#      volume_type: { get_resource: myvolumetype }
-#      provider: nova.volume.encryptors.luks.LuksEncryptor
-#
+  encryption_type:
+    type: OS::Cinder::EncryptedVolumeType
+    properties:
+      volume_type: { get_resource: myvolumetype }
+      provider: nova.volume.encryptors.luks.LuksEncryptor
+
 
   # This resource may trigger a 403 from two sources (both will be visible in
   # cinder-api.log):
@@ -73,7 +73,7 @@ resources:
     properties:
       name: myencryptedvolume
       size: 1
-      volume_type: encrypted
+      volume_type: { get_resource: myvolumetype }
 
   myserver:
     type: OS::Nova::Server

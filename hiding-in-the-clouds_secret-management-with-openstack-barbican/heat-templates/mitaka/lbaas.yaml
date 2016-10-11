@@ -1,3 +1,7 @@
+# heat stack-create --poll -f heat-templates/hot/lbaasv2/lb_group.yaml -P public_key="$(cat server.crt)" -P private_key="$(cat server.key)" -P public_network=floating -P image=cirros-0.3.4-x86_64-tempest-machine -P flavor=m1.tiny lb_ssl
+# Note: You will need to generate SSL keys as documented in
+#         https://wiki.openstack.org/wiki/Network/LBaaS/docs/how-to-create-tls-loadbalancer#Create_certificate_chain_and_key.
+#       and be in the directory where you created the keys for this to work.
 heat_template_version: 2015-10-15
 
 description: A Group of Load Balanced Servers
