@@ -3,6 +3,13 @@
 # Note: You will need to generate SSL keys as documented in
 #         https://wiki.openstack.org/wiki/Network/LBaaS/docs/how-to-create-tls-loadbalancer#Create_certificate_chain_and_key.
 #       and be in the directory where you created the keys for this to work.
+# Once the stack has been created, you can verify the load balancer works as
+# follows (you'll need to be root or have some other means of pointing the DNS
+# for lb.example.com at the load balancer IP):
+#
+# sed -i '/lb\.example\.com.*/d' /etc/hosts; echo "$(heat output-show lb_ssl lb_ip | sed 's/"//g')  lb.example.com" >> /etc/hosts
+# curl --cacert ca.pem https://lb.example.com
+
 heat_template_version: 2015-10-15
 
 description: A Group of Load Balanced Servers
