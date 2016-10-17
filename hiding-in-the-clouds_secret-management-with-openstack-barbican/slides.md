@@ -86,6 +86,9 @@ TODO alee: Is this suitable for use? (has been broken throughout Mitaka,
 see https://review.openstack.org/#/c/339052/)
 -->
 
+## Barbican Architecture
+![alt tag](http://docs.openstack.org/developer/barbican/_images/barbican-overall-architecture.gif)
+
 # Use Cases
 
 ## Use case: Encrypted Cinder Volumes
