@@ -6,8 +6,6 @@
 
 * Packages for RDO (RPM Distribution of OpenStack) and SOC SUSE Openstack Cloud available now
 
-* Secret Store Back-ends
-
 * What are all these services about? - barbican-retry, barbican-keystone-listener, barbican-worker
 
 * Use cases: Encrypted cinder volumes, Magnum Cluster certificates, LBaaS
@@ -48,55 +46,6 @@ requests to these CAs through a uniform API.
 
 * Packages for Ubuntu already available
 
-* Puppet modules to install and configure Barbican available
-
-<! --
-
-Puppet modules https://github.com/openstack/puppet-barbican have been
-tested against RDO and are currently running in puppet integration tests.
-
--->
-
-## Secret Store Back-ends
-
-* Operators need to decide how and where secrets are stored.
-
-* Barbican has a plugin infrastructure, configured in barbican.conf
-
-* As of Newton, multiple plugins can be enabled, and can be configured per project.
-
-<!--
-
-Configuring multiple plugins is useful when you need to provide different levels
-of security.  Secrets uses by a development or test project could use the basic
-development plugin, while some secrets may require a FIPS common criteria
-certified storage mechanism using an HSM
-
--->
-
-## Some Secret Store Plugins
-
-* Development plugin
-** Secrets encrypted by symmetric key and stored in Barbican mysql DB
-** Encryption key stored in plaintext in barbican.conf
-** NOT for production
-
-* PKCS11 plugin
-** Secrets encrypted by project specific key encryption keys (KEK) and stored in Barbican mysql DB
-** KEKs encrypted by Master KEK, which is stored in HSM using PKCS#11.
-** In production with Lunasa, but others possible.
-
-## More Secret Store Plugins
-
-* Dogtag Plugin
-** Secrets stored in Dogtag KRA
-** KRA is backed by either NSS database or HSM (through PKCS#11)
-** Lunasa and Thales netHSM tested, others possible.
-** FIPS/ Common Criteria etc.
-
-* KMIP
-** Secrets stored in KMIP device
-
 ## Barbican Services 101
 
 * barbican-api: interaction with users and instances
@@ -119,8 +68,6 @@ run using some sort of WSGI enabled web server. If you install a
 package, this won't be a problem SUSE and Ubuntu provide Apache
 configuration for running barbican-api using mod_wsgi, while RDO
 provides configuration for running it in the gunicorn web server.
-The Barbican puppet modules set up Barbican by default over Apache using
-mod_wsgi.
 
 barbican-worker is a RabbitMQ driven service that handles communicating
 with external CAs for certificate signing requests. It's possible to
