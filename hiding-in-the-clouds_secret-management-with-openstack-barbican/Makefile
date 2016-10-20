@@ -6,6 +6,8 @@ SVG_PNG := $(patsubst %.svg, %.png, $(SVG))
 DIA_PNG := $(patsubst %.dia, %.PNG, $(DIA))
 PNG :=  $(DIA_PNG) $(SVG_PNG)
 
+all: presentation.odp presentation.pdf transcript.txt
+
 presentation.odp: slides.md	template.odp $(PNG)
 	odpdown \
 	-p 1 \
@@ -15,8 +17,6 @@ presentation.odp: slides.md	template.odp $(PNG)
 
 presentation.pdf: presentation.odp
 	libreoffice --convert-to pdf $<
-
-all: presentation.odp presentation.pdf transcript.txt
 
 img/%.png: img/%.svg
 	convert $< $@
