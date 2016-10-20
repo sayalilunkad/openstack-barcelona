@@ -221,9 +221,9 @@ deferred operations that may happen well after load balancer creation (for
 instance in a failover scenario) and passes them into its drivers as required.
 For storing the secrets it uses a Barbican secret container.
 
-We created another Heat template for building such a SSL enabled Neutron load
-balancer. You'll find this template in the talk's repository as well. Again,
-you'll need to configure some things for this to work. See our READMEs and the
-comments in the Heat templates for details.
+There's no workshop for this one, but we created another Heat template for
+building a SSL enabled Neutron load balancer. You'll find this template in the
+talk's repository as well. Again, you'll need to configure some things for this
+to work. See our READMEs and the comments in the Heat templates for details.
 
 -->
