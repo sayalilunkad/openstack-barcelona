@@ -139,9 +139,6 @@ retry process for asymmetric and symmetric key generation
 barbican-keystone-listener is a cleanup tool that eavesdrops on
 Keystone's RabbitMQ queues and cleans up Barbican resources when
 projects/users get deleted.
-
-TODO alee: Is this suitable for use? (has been broken throughout Mitaka,
-see https://review.openstack.org/#/c/339052/)
 -->
 
 ## Barbican Architecture
