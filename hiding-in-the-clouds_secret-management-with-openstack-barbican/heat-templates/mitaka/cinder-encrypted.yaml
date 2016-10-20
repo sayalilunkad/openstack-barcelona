@@ -62,11 +62,13 @@ resources:
   #
   #   * Barbican, if the setting trusts_delegated_roles in heat.conf is not either
   #       1) Empty (the default setting)
-  #       2) A list of roles that includes either `creator` role used by
+  #       2) A list of roles that includes either the `creator` role used by
   #          Barbican to determine whether a user is allowed to create an Order
   #          resource or the `admin` role.
   #     In the second case, the user instantiating this Heat template must have
-  #     all roles mentioned in trusts_delegated_roles.
+  #     all roles mentioned in trusts_delegated_roles. In short: use Heat's
+  #     default setting to test this template and only start tightening the
+  #     trusts_delegated_roles later.
 
   myvolume:
     type: OS::Cinder::Volume

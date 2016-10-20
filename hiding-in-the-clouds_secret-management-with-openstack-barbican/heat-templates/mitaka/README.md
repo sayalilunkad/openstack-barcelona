@@ -20,6 +20,7 @@ client invocation at the top. You will probably have to modify this slighly for
 your own use.
 
 For encrypted Cinder volumes to work through Heat, you will also need to apply
-the patch attached to this bug:
+the patch attached to this bug (only available for Mitaka right now, but stay
+tuned):
 
 https://bugs.launchpad.net/cinder/+bug/1631078
