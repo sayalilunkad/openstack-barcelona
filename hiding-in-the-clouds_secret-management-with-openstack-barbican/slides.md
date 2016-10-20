@@ -54,6 +54,10 @@ requests to these CAs through a uniform API.
 
 Puppet modules https://github.com/openstack/puppet-barbican have been
 tested against RDO and are currently running in puppet integration tests.
+A Crowbar Barclamp (Chef cookbook along with Crowbar Web UI integration) has
+been developed and tested for SUSE OpenStack Cloud 7:
+
+https://github.com/crowbar/crowbar-openstack/tree/master/chef/cookbooks/barbican
 
 -->
 
