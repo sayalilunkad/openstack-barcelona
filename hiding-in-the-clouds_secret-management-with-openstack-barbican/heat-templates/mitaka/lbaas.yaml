@@ -170,7 +170,6 @@ resources:
       image: { get_param: image }
       flavor: { get_param: flavor }
       networks: [{ port: { get_resource: server2_port }}]
-      security_groups: [{ get_resource: sec_group }]
       user_data_format: RAW
       user_data:
         str_replace:
