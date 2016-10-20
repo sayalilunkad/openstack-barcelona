@@ -8,7 +8,7 @@
 
 * Secret Store Back-ends
 
-* What are all these services about? - barbican-retry, barbican-keystone-listener, barbican-worker
+* What are all these services about? `barbican-retry`, `barbican-keystone-listener`, `barbican-worker`
 
 * Use cases: Encrypted cinder volumes, Magnum Cluster certificates, LBaaS
 
@@ -50,7 +50,7 @@ requests to these CAs through a uniform API.
 
 * Puppet modules to install and configure Barbican available
 
-<! --
+<!--
 
 Puppet modules https://github.com/openstack/puppet-barbican have been
 tested against RDO and are currently running in puppet integration tests.
@@ -68,7 +68,7 @@ tested against RDO and are currently running in puppet integration tests.
 <!--
 
 Configuring multiple plugins is useful when you need to provide different levels
-of security.  Secrets uses by a development or test project could use the basic
+of security. Secrets used by a development or test project could use the basic
 development plugin, while some secrets may require a FIPS common criteria
 certified storage mechanism using an HSM
 
@@ -77,25 +77,26 @@ certified storage mechanism using an HSM
 ## Some Secret Store Plugins
 
 * Development plugin
-** Secrets encrypted by symmetric key and stored in Barbican mysql DB
-** Encryption key stored in plaintext in barbican.conf
-** NOT for production
+ * Secrets encrypted by symmetric key and stored in Barbican DB
+ * Encryption key stored in plaintext in barbican.conf
+ * NOT for production
 
 * PKCS11 plugin
-** Secrets encrypted by project specific key encryption keys (KEK) and stored in Barbican mysql DB
-** KEKs encrypted by Master KEK, which is stored in HSM using PKCS#11.
-** In production with Lunasa, but others possible.
+ * Secrets encrypted by project specific key encryption keys (KEK) and stored in Barbican DB
+ * KEKs encrypted by Master KEK, which is stored in HSM using PKCS#11.
+ * In production with Lunasa, but others possible.
 
 ## More Secret Store Plugins
 
 * Dogtag Plugin
-** Secrets stored in Dogtag KRA
-** KRA is backed by either NSS database or HSM (through PKCS#11)
-** Lunasa and Thales netHSM tested, others possible.
-** FIPS/ Common Criteria etc.
+ * Secrets stored in Dogtag KRA
+ * KRA is backed by either NSS database or HSM (through PKCS#11)
+ * Lunasa and Thales netHSM tested, others possible.
+ * FIPS/ Common Criteria etc.
 
 * KMIP
-** Secrets stored in KMIP device
+
+ * Secrets stored in KMIP device
 
 ## Barbican Services 101
 
