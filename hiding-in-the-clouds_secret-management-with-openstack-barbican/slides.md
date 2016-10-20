@@ -54,6 +54,10 @@ requests to these CAs through a uniform API.
 
 Puppet modules https://github.com/openstack/puppet-barbican have been
 tested against RDO and are currently running in puppet integration tests.
+A Crowbar Barclamp (Chef cookbook along with Crowbar Web UI integration) has
+been developed and tested for SUSE OpenStack Cloud 7:
+
+https://github.com/crowbar/crowbar-openstack/tree/master/chef/cookbooks/barbican
 
 -->
 
@@ -135,9 +139,6 @@ retry process for asymmetric and symmetric key generation
 barbican-keystone-listener is a cleanup tool that eavesdrops on
 Keystone's RabbitMQ queues and cleans up Barbican resources when
 projects/users get deleted.
-
-TODO alee: Is this suitable for use? (has been broken throughout Mitaka,
-see https://review.openstack.org/#/c/339052/)
 -->
 
 ## Barbican Architecture
@@ -147,11 +148,82 @@ see https://review.openstack.org/#/c/339052/)
 
 ## Use case: Encrypted Cinder Volumes
 
+* Cinder can create LUKS encrypted volumes
+
+* Keys in Barbican (for Nova to decrypt)
+
+* Details: Heat templates and this morning's hands-on workshop
+
+<!--
+
+With the help of Barbican, Cinder can create LUKS encrypted volumes. For this
+to work, Cinder will store the encryption key in a Barbican, where Nova can
+later retrieve it upon attaching the volume to an instance. Nova will then
+create a decrypted device mapper block device on the compute node the target
+compute node resides on and attach it to the instance.
+
+You may already have tried your hand at encrypted volumes in this morning's
+"Secure Your Cinder" workshop. If you missed the workshop, don't worry. The
+slides for this talk are publicly available (We'll provide a link at the end)
+and we prepared a Heat template and instructions for creating encrypted Cinder
+volumes. For the Heat template to work you may need to adjust some
+configuration and you will have to apply a patch. See the READMEs in the
+heat-templates/ directory and below for details.
+
+-->
+
 ## Use case: Magnum Cluster Certificates
+
+* Magnum: acts as a CA for its clusters
+
+* CA certificates are stored in Barbican by default
+
+* Trivial to set up: Have barbican running and `cert_manager_type=barbican` in
+  `magnum.conf` (default setting).
+
+<!--
+
+This one is a bit more mundane. When Magnum creates a cluster of multiple
+instances and the container orchestration engine riding herd on these instances
+(such as Kubernetes) is using SSL, all instances need SSL certificates signed
+by a CA. Magnum generates such a CA for each cluster and stores its keys in
+Barbican. The instances then use the Magnum API to retrieve the CA's
+certificate and submit CSRs for their own certificates to Magnum.
+
+This is trivial to set up so we haven't provided a heat template. All you need
+is make sure your OpenStack cloud is running Barbican when you roll out Magnum
+and ensure the cert_manager setting in magnum.conf is at its default of
+"barbican".
+
+-->
 
 ## Use case: Load Balancer as a Service
 
+* Neutron LBaaS supports SSL termination now.
+
+* Certificates stored in Barbican.
+
+* Neutron spawns a dedicated instance or configures an SSL termination
+  appliance (various plugins available).
+
+* See Heat template for details.
+
 <!--
-Let's start this off by giving you a short refresher on what Barbican is and
-what it does.
+
+Finally, we've got another non-trivial use case: SSL termination on Neutron's
+Load Balancer as a Service. This requires the neutron_lbaas plugin in Neutron
+to be enabled.
+
+Conceptually it's fairly simple: Neutron's got tons of backend drivers for Load
+Balancer as a Service. A fair amount of these (not least Neutron's own haproxy
+driver) support SSL. neutron_lbaas takes care of storing these certificates for
+deferred operations that may happen well after load balancer creation (for
+instance in a failover scenario) and passes them into its drivers as required.
+For storing the secrets it uses a Barbican secret container.
+
+There's no workshop for this one, but we created another Heat template for
+building a SSL enabled Neutron load balancer. You'll find this template in the
+talk's repository as well. Again, you'll need to configure some things for this
+to work. See our READMEs and the comments in the Heat templates for details.
+
 -->
