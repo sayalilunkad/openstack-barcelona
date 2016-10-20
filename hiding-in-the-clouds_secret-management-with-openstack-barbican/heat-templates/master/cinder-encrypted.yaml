@@ -1,21 +1,13 @@
 # Example invocation: heat stack-create --poll -f cinder-encrypted.yaml cinder-encrypted
 heat_template_version: 2015-10-15
 
-# Some notes about the parameters:
-#
-# The parameters provided are the defaults for Openstack SUSE.
-# For devstack, the following values apply:
-#
-# floating_network: public
-# image: cirros-0.3.4-x86_64-uec
-#
 parameters:
   floating_network:
     type: string
-    default: floating
+    default: public
   image:
     type: string
-    default: cirros-0.3.4
+    default: cirros-0.3.4-x86_64-uec
   flavor:
     type: string
     default: m1.tiny
@@ -56,9 +48,9 @@ resources:
   # Note: this can only created if heat-engine uses an adminURL for its Cinder client
   # cinder encryption-type-create encrypted nova.volume.encryptors.luks.LuksEncryptor
   #
-  # Note: in mitaka, the cipher and key_size were optional and defaulted to the values
-  # seen below.  In newton, it appears that these defaults have been removed and
-  # these values must be added.
+  # Note: in mitaka, the cipher and key_size were optional and defaulted to the
+  # values seen below.  In newton, it appears that these defaults have been
+  # removed and these properties must be added.
   encryption_type:
     type: OS::Cinder::EncryptedVolumeType
     properties:
