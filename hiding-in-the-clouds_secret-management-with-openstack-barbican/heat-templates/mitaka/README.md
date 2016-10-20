@@ -6,15 +6,14 @@ In this directory you will find the following Heat templates:
 * *lbaas.yaml:* builds two instances behind a SSL enabled keystore
 
 For these Heat templates to work, you will need to adapt some configuration
-settings in the following files:
+settings for the following services:
 
-* `cinder.conf`
-* `heat.conf`
-* `nova.conf`
-* `neutron.conf`
-* `neutron_lbaas.conf`
+* `Cinder`
+* `Heat`
+* `Nova`
+* `Neutron`
 
-You will find commented configuration snippets for each of these files in the
+You will find commented configuration snippets for all affected files in the
 `etc/` subdirectory. Both Heat templates contain a comment with an example Heat
 client invocation at the top. You will probably have to modify this slighly for
 your own use.
