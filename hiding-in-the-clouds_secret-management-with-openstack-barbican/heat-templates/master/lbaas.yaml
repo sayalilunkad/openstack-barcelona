@@ -1,0 +1,274 @@
+heat_template_version: 2015-10-15
+
+description: |
+  # Example invocation:
+
+  heat stack-create --poll \
+    -f heat-templates/hot/lbaasv2/lb_group.yaml \
+    -P public_key="$(cat server.crt)" \
+    -P private_key="$(cat server.key)" \
+    -P public_network=floating \
+    -P image=cirros-0.3.4-x86_64-tempest-machine \
+    -P flavor=m1.tiny \
+    lb_ssl
+
+  # Note: You will need to generate SSL keys as documented in
+  #         https://wiki.openstack.org/wiki/Network/LBaaS/docs/how-to-create-tls-loadbalancer#Create_certificate_chain_and_key.
+  #       and be in the directory where you created the keys for this to work.
+  #       A simple script get_certs.sh has been provided to generate some simple
+  #       certificates and keys for testing.
+  
+  # Once the stack has been created, you can verify the load balancer works as
+  # follows (you'll need to be root or have some other means of pointing the DNS
+  # entry for lb.example.com at the load balancer IP):
+  
+  sed -i '/lb\.example\.com.*/d' /etc/hosts
+  echo "$(heat output-show lb_ssl lb_ip | sed 's/"//g')  lb.example.com" >> /etc/hosts
+  curl --cacert ca.pem https://lb.example.com
+  
+
+parameters:
+
+  app_port:
+    type: number
+    default: 4443
+    description: Port used by the servers
+  flavor:
+    type: string
+    description: Flavor used for servers
+    constraints:
+    - custom_constraint: nova.flavor
+  image:
+    type: string
+    description: Image used for servers
+    constraints:
+    - custom_constraint: glance.image
+  lb_port:
+    type: number
+    default: 443
+    description: Port used by the load balancer
+  public_network:
+    type: string
+    description: Network used by the load balancer
+    constraints:
+    - custom_constraint: neutron.network
+  private_key:
+    type: string
+    description: The server certificate's private key
+  public_key:
+    type: string
+    description: The server certificate's public key
+
+
+resources:
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network:
+          get_param: public_network
+
+  lb_network:
+    type: OS::Neutron::Net
+    properties:
+      name: lb_network
+
+  lb_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      cidr: 10.0.1.0/24
+      name: lb_subnet
+      network:
+        get_resource: lb_network
+
+  private_network:
+    type: OS::Neutron::Net
+    properties:
+      name: private_network
+
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      cidr: 10.0.2.0/24
+      name: private_subnet
+      network:
+        get_resource: private_network
+
+  lb_router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: { get_resource: router }
+      subnet: { get_resource: private_subnet }
+
+  private_router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: { get_resource: router }
+      subnet: { get_resource: lb_subnet }
+
+  sec_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        port_range_min: { get_param: app_port }
+        port_range_max: { get_param: app_port }
+      # Only for accessing instances during debugging/testing: do NOT do this
+      # in production:
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        port_range_min: 22
+        port_range_max: 22
+
+  server1:
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks: [{ port: { get_resource: server1_port }}]
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            set -x
+            exec > /var/log/user-data.log 2>&1
+            Body="Works member $(hostname)"
+            Response="HTTP/1.1 200 OK\r\nContent-Length: ${#Body}\r\n\r\n$Body"
+            while true ; do echo -e $Response | sudo nc -llp PORT; done
+          params:
+            PORT: { get_param: app_port }
+
+  server1_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: private_network }
+      security_groups:
+        - get_resource: sec_group
+
+  # Only for accessing instances during debugging/testing: do NOT assign
+  # floating IPs to servers behind the load balancer in production.
+  server1_float:
+    type: OS::Neutron::FloatingIP
+    depends_on: private_router_interface
+    properties:
+      port_id: { get_resource: server1_port }
+      floating_network: { get_param: public_network }
+
+
+  pool_member1:
+    type: OS::Neutron::LBaaS::PoolMember
+    properties:
+      pool: { get_resource: pool }
+      address: { get_attr: [ server1, first_address ]}
+      protocol_port: { get_param: app_port }
+      subnet: { get_resource: lb_subnet }
+
+  server2:
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks: [{ port: { get_resource: server2_port }}]
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/sh
+            set -x
+            exec > /var/log/user-data.log 2>&1
+            Body="Works member $(hostname)"
+            Response="HTTP/1.1 200 OK\r\nContent-Length: ${#Body}\r\n\r\n$Body"
+            while true ; do echo -e $Response | sudo nc -llp PORT; done
+          params:
+            PORT: { get_param: app_port }
+
+  server2_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: private_network }
+      security_groups:
+        - get_resource: sec_group
+
+  # Only for accessing instances during debugging/testing: do NOT assign
+  # floating IPs to servers behind the load balancer in production.
+  server2_float:
+    type: OS::Neutron::FloatingIP
+    depends_on: private_router_interface
+    properties:
+      port_id: { get_resource: server2_port }
+      floating_network: { get_param: public_network }
+
+  pool_member2:
+    type: OS::Neutron::LBaaS::PoolMember
+    properties:
+      pool: { get_resource: pool }
+      address: { get_attr: [ server2, first_address ]}
+      protocol_port: { get_param: app_port }
+      subnet: { get_resource: lb_subnet }
+
+  pool:
+    type: OS::Neutron::LBaaS::Pool
+    properties:
+      lb_algorithm: ROUND_ROBIN
+      protocol: HTTP
+      listener: { get_resource: listener }
+
+  server_public_key:
+   type: OS::Barbican::Secret
+   properties:
+     name: server_public_key
+     payload: { get_param: public_key }
+     payload_content_type: text/plain
+
+  server_private_key:
+   type: OS::Barbican::Secret
+   properties:
+     name: server_private_key
+     payload: { get_param: private_key }
+     payload_content_type: text/plain
+
+  tls_container:
+   type: OS::Barbican::CertificateContainer
+   properties:
+     certificate_ref: { get_resource: server_public_key }
+     private_key_ref: { get_resource: server_private_key }
+     name: tls_container
+
+  listener:
+    type: OS::Neutron::LBaaS::Listener
+    properties:
+      default_tls_container_ref: { get_resource: tls_container }
+      loadbalancer: { get_resource: loadbalancer }
+      protocol: TERMINATED_HTTPS
+      protocol_port: { get_param: lb_port }
+
+  loadbalancer:
+    type: OS::Neutron::LBaaS::LoadBalancer
+    depends_on: lb_router_interface
+    properties:
+      vip_subnet: { get_resource: lb_subnet }
+
+  floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_network }
+      port_id: { get_attr: [loadbalancer, vip_port_id ]}
+
+outputs:
+
+  lb_ip:
+    value: { get_attr: [ floating_ip, floating_ip_address ] }
+  lburl:
+    value:
+      str_replace:
+        template: https://IP_ADDRESS:PORT
+        params:
+          IP_ADDRESS: { get_attr: [ floating_ip, floating_ip_address ] }
+          PORT: { get_param: lb_port }
+    description: >
+      This URL is the "external" URL that can be used to access the
+      load balancer.
+
