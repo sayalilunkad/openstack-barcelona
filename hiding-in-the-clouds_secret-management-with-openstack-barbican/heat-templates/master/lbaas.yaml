@@ -7,8 +7,6 @@ description: |
     -f lbaas.yaml \
     -P public_key="$(cat server.crt)" \
     -P private_key="$(cat server.key)" \
-    -P public_network=floating \
-    -P image=cirros-0.3.4-x86_64-tempest-machine \
     -P flavor=m1.tiny \
     lb_ssl
 
@@ -41,6 +39,7 @@ parameters:
   image:
     type: string
     description: Image used for servers
+    default: cirros-0.3.4-x86_64-uec
     constraints:
     - custom_constraint: glance.image
   lb_port:
@@ -50,6 +49,7 @@ parameters:
   public_network:
     type: string
     description: Network used by the load balancer
+    default: public
     constraints:
     - custom_constraint: neutron.network
   private_key:
