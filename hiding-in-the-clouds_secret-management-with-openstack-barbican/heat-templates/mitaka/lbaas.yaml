@@ -4,7 +4,7 @@ description: |
   # Example invocation:
 
   heat stack-create --poll \
-    -f heat-templates/hot/lbaasv2/lb_group.yaml \
+    -f lbaas.yaml \
     -P public_key="$(cat server.crt)" \
     -P private_key="$(cat server.key)" \
     -P public_network=floating \
@@ -13,8 +13,15 @@ description: |
     lb_ssl
 
   # Note: You will need to generate SSL keys as documented in
+  #
   #         https://wiki.openstack.org/wiki/Network/LBaaS/docs/how-to-create-tls-loadbalancer#Create_certificate_chain_and_key.
+  #
   #       and be in the directory where you created the keys for this to work.
+  #       
+  #       Alternatively, you can use the script get_certs.sh in this directory
+  #       to generate all keys and certificates and required for testing. It
+  #       will write the keys and certificates to the directory it is run from
+  #       and takes no arguments.
   
   # Once the stack has been created, you can verify the load balancer works as
   # follows (you'll need to be root or have some other means of pointing the DNS
