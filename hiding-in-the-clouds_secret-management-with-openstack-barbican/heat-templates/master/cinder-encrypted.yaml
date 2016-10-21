@@ -75,6 +75,7 @@ resources:
 
   myvolume:
     type: OS::Cinder::Volume
+    depends_on: encryption_type
     properties:
       name: myencryptedvolume
       size: 1
@@ -119,6 +120,7 @@ resources:
 
   myfloatingip:
     type: OS::Neutron::FloatingIP
+    depends_on: router_interface
     properties:
       port_id: { get_resource: myport }
       floating_network:
