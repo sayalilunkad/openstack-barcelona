@@ -6,12 +6,11 @@ In this directory you will find the following Heat templates:
 * *lbaas.yaml:* builds two instances behind a SSL enabled keystore
 
 Both templates were tested on a Devstack instance built shortly before the
-summit. `lbaas.yaml` should work out of the box in this sort of environment.
+Summit. `lbaas.yaml` should work out of the box in this sort of environment.
 For `cinder-encrypted.yaml` to work, you may need to adapt some configuration
 settings for the following services:
 
 * `Cinder`
-* `Heat`
 * `Nova`
 
 You will find commented configuration snippets for all affected files in the
