@@ -4,7 +4,7 @@ description: |
   # Example invocation:
 
   heat stack-create --poll \
-    -f heat-templates/hot/lbaasv2/lb_group.yaml \
+    -f lbaas.yaml \
     -P public_key="$(cat server.crt)" \
     -P private_key="$(cat server.key)" \
     -P public_network=floating \
