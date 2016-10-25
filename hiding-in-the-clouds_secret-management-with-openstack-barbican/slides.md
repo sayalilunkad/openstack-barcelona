@@ -61,47 +61,6 @@ https://github.com/crowbar/crowbar-openstack/tree/master/chef/cookbooks/barbican
 
 -->
 
-## Secret Store Back-ends
-
-* Operators need to decide how and where secrets are stored.
-
-* Barbican has a plugin infrastructure, configured in barbican.conf
-
-* As of Newton, multiple plugins can be enabled, and can be configured per project.
-
-<!--
-
-Configuring multiple plugins is useful when you need to provide different levels
-of security. Secrets used by a development or test project could use the basic
-development plugin, while some secrets may require a FIPS common criteria
-certified storage mechanism using an HSM
-
--->
-
-## Some Secret Store Plugins
-
-* Development plugin
- * Secrets encrypted by symmetric key and stored in Barbican DB
- * Encryption key stored in plaintext in barbican.conf
- * NOT for production
-
-* PKCS11 plugin
- * Secrets encrypted by project specific key encryption keys (KEK) and stored in Barbican DB
- * KEKs encrypted by Master KEK, which is stored in HSM using PKCS#11.
- * In production with Lunasa, but others possible.
-
-## More Secret Store Plugins
-
-* Dogtag Plugin
- * Secrets stored in Dogtag KRA
- * KRA is backed by either NSS database or HSM (through PKCS#11)
- * Lunasa and Thales netHSM tested, others possible.
- * FIPS/ Common Criteria etc.
-
-* KMIP
-
- * Secrets stored in KMIP device
-
 ## Barbican Services 101
 
 * barbican-api: interaction with users and instances
@@ -143,6 +102,48 @@ projects/users get deleted.
 
 ## Barbican Architecture
 ![alt tag](http://docs.openstack.org/developer/barbican/_images/barbican-overall-architecture.gif)
+
+## Secret Store Back-ends
+
+* Operators need to decide how and where secrets are stored.
+
+* Barbican has a plugin infrastructure, configured in barbican.conf
+
+* As of Newton, multiple plugins can be enabled, and can be configured per project.
+
+<!--
+
+Configuring multiple plugins is useful when you need to provide different levels
+of security. Secrets used by a development or test project could use the basic
+development plugin, while some secrets may require a FIPS common criteria
+certified storage mechanism using an HSM
+
+-->
+
+## Some Secret Store Plugins
+
+* Development plugin
+ * Secrets encrypted by symmetric key and stored in Barbican DB
+ * Encryption key stored in plaintext in barbican.conf
+ * NOT for production
+
+* PKCS11 plugin
+ * Secrets encrypted by project specific key encryption keys (KEK) and stored in Barbican DB
+ * KEKs encrypted by Master KEK, which is stored in HSM using PKCS#11.
+ * In production with Lunasa, but others possible.
+
+## More Secret Store Plugins
+
+* Dogtag Plugin
+ * Secrets stored in Dogtag KRA
+ * KRA is backed by either NSS database or HSM (through PKCS#11)
+ * Lunasa and Thales netHSM tested, others possible.
+ * FIPS/ Common Criteria etc.
+
+* KMIP
+
+ * Secrets stored in KMIP device
+
 
 # Use Cases
 
