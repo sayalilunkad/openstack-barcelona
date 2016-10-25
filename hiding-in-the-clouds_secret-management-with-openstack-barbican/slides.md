@@ -158,17 +158,18 @@ certified storage mechanism using an HSM
 <!--
 
 With the help of Barbican, Cinder can create LUKS encrypted volumes. For this
-to work, Cinder will store the encryption key in a Barbican, where Nova can
-later retrieve it upon attaching the volume to an instance. Nova will then
-create a decrypted device mapper block device on the compute node the target
-compute node resides on and attach it to the instance.
+to work, Cinder will store the encryption key in a Barbican secret container.
+From there, Nova can later retrieve it to attach the volume to an instance.
+To this end, Nova will create a decrypted device on the compute node the target
+instance resides on. This device gets attached to the instance - volume
+encryption is transparent to the instance.
 
 You may already have tried your hand at encrypted volumes in this morning's
 "Secure Your Cinder" workshop. If you missed the workshop, don't worry. The
-slides for this talk are publicly available (We'll provide a link at the end)
-and we prepared a Heat template and instructions for creating encrypted Cinder
+slides for our talk are publicly available (We'll provide a link at the end)
+and come with a Heat template and instructions for creating encrypted Cinder
 volumes. For the Heat template to work you may need to adjust some
-configuration and you will have to apply a patch. See the READMEs in the
+configuration and you may also have to apply a patch. See the READMEs in the
 heat-templates/ directory and below for details.
 
 -->
@@ -224,7 +225,8 @@ For storing the secrets it uses a Barbican secret container.
 
 There's no workshop for this one, but we created another Heat template for
 building a SSL enabled Neutron load balancer. You'll find this template in the
-talk's repository as well. Again, you'll need to configure some things for this
-to work. See our READMEs and the comments in the Heat templates for details.
+talk's repository as well. Again, you may need to configure some things for
+this to work. See our READMEs and the comments in the Heat templates for
+details.
 
 -->
