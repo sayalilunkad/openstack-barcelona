@@ -4,7 +4,7 @@
 
 * What is Barbican?
 
-* Packages for RDO (RPM Distribution of OpenStack) and SOC SUSE Openstack Cloud available now
+* Packages for RDO and SUSE Openstack Cloud available now
 
 * Secret Store Back-ends
 
@@ -42,13 +42,13 @@ requests to these CAs through a uniform API.
 
 ## More packages available now
 
-* Packages for RDO (RPM Distribution of OpenStack) available
+* Packages for RDO available
 
-* Packages for SOC (SUSE OpenStack Cloud) available
+* Packages for SUSE OpenStack Cloud available
 
 * Packages for Ubuntu already available
 
-* Puppet modules to install and configure Barbican available
+* Puppet modules and Chef cookbooks to install and configure Barbican are available
 
 <!--
 
@@ -56,7 +56,6 @@ Puppet modules https://github.com/openstack/puppet-barbican have been
 tested against RDO and are currently running in puppet integration tests.
 A Crowbar Barclamp (Chef cookbook along with Crowbar Web UI integration) has
 been developed and tested for SUSE OpenStack Cloud 7:
-
 https://github.com/crowbar/crowbar-openstack/tree/master/chef/cookbooks/barbican
 
 -->
