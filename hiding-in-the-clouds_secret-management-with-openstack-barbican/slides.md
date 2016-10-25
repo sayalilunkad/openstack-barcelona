@@ -64,8 +64,7 @@ https://github.com/crowbar/crowbar-openstack/tree/master/chef/cookbooks/barbican
 
 * barbican-api: interaction with users and instances
 
-* barbican-worker: handles communication with external
-  CAs
+* barbican-worker: used for asyncronous operations to generate keys
 
 * barbican-retry: legacy service used for TLS certificate generation
 
